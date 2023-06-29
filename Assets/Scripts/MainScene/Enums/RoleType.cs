@@ -1,0 +1,10 @@
+﻿public enum RoleTypes {
+	BUILDER,
+	SETTLER,
+	MAYOR,
+	CRAFTSMAN,
+	CAPTAIN,
+	TRADER,
+	PROSPECTOR_1,
+	PROSPECTOR_2
+}

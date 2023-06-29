@@ -1,0 +1,52 @@
+﻿// Este fichero está generado automáticamente para guardar el perfil del jugador así como una estadísitica general de sus resultados.
+// This file is auto-generated to save the gamer profile and a general stadistic of his results.
+
+// DATOS DE PERFIL
+Apodo=Linktrm
+Avatar=
+
+// ESTADÍSTICAS GLOBALES
+PartidasJugadas=0
+PartidasJugadas3J=0
+PartidasJugadas4J=0
+PartidasJugadas5J=0
+Victorias=0
+Derrotas=0
+MediaVictorias=0
+MediaDerrotas=0
+MediaPuestos3J=0
+MediaPuestos4J=0
+MediaPuestos5J=0
+MediaRoleAlcalde=0
+MediaRoleBuscadorDeOro=0
+MediaRoleCapataz=0
+MediaRoleCapitan=0
+MediaRoleColonizador=0
+MediaRoleConstructor=0
+MediaRoleMercader=0
+MediaMonedasGanadas=0
+MediaMonedasGanadasAcumuladasRole=0
+MediaMonedasGastadas=0
+MediaPVGanados=0
+MediaEdificiosComprados=0
+MediaEdificiosFabrica=0
+MediaEdificiosLilasNormales=0
+MediaEdificiosLilasGrandes=0
+MediaPlantacionesCogidas=0
+MediaCanterasCogidas=0
+MediaPlantacionMaizCogido=0
+MediaPlantacionAnilCogido=0
+MediaPlantacionAzucarCogido=0
+MediaPlantacionTabacoCogido=0
+MediaPlantacionCafeCogido=0
+MediaMaizProducido=0
+MediaAnilProducido=0
+MediaAzucarProducido=0
+MediaTabacoProducido=0
+MediaCafeProducido=0
+MediaColonosConseguidos=0
+MediaColonosSanJuan=0
+MediaBarrilesVendidos=0
+MediaSobreprecioVentas=0
+MediaTableroEdificios=0
+MediaTableroPlantaciones=0
