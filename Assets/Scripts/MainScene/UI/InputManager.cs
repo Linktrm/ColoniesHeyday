@@ -77,22 +77,22 @@ public static class InputManager {
 	}
 
 	public static InputType Horizontal(int controller, InputType input) {
-		//Debug.Log("CALCULAMOS HORIZONTAL");
+		// Debug.Log("========> CALCULAMOS HORIZONTAL");
 		switch(controller) {
 			case 1:
 				// Si no está en estado DONE (botón mantenido), ejecuta la acción direccional
 				if(input != InputType.PLAYER1_DONE) {
-					//Debug.Log("El input no es DONE, así que devuelvo el valor horizontal " + Player1Horizontal());
+					// Debug.Log("El input no es DONE, así que devuelvo el valor horizontal " + Player1Horizontal());
 					return Player1Horizontal();
 				} else {
-					//Debug.Log("El input horizontal es DONE");
+					// Debug.Log("El input horizontal es DONE");
 					// Si el jugador sigue manteniendo el botón y no es IDLE, seguirá retornando DONE
 					if(Player1Horizontal() != InputType.PLAYER1_IDLE) {
-						//Debug.Log("El usuario está manteniendo la dirección horizontal " + Player1Horizontal() + " así que sigo devolviendo DONE");
+						// Debug.Log("El usuario está manteniendo la dirección horizontal " + Player1Horizontal() + " así que sigo devolviendo DONE");
 						return InputType.PLAYER1_DONE;
 					}
 					// Si el jugador ha soltado el botón, devuelve IDLE
-					//Debug.Log("El usuario ha soltado el botón horizontal, devuelvo IDLE");
+					// Debug.Log("El usuario ha soltado el botón horizontal, devuelvo IDLE");
 					return InputType.PLAYER1_IDLE;
 				}
 			case 2:
@@ -236,27 +236,27 @@ public static class InputManager {
 	}
 
 	public static InputType Vertical(int controller, InputType input) {
-		//Debug.Log("CALCULAMOS VERTICAL");
+		// Debug.Log("========> CALCULAMOS VERTICAL");
 		switch(controller) {
 			case 1:
 				// Si no está en estado DONE (botón mantenido), ejecuta la acción direccional
 				if(input != InputType.PLAYER1_DONE) {
 					InputType horizontalValue = Horizontal(controller, InputType.PLAYER1_IDLE);
 					if(horizontalValue != InputType.PLAYER1_IDLE) {
-						//Debug.Log("El input es Horizontal, devuelvo lo que era = " + horizontalValue);
+						// Debug.Log("El input es Horizontal, devuelvo lo que era = " + horizontalValue);
 						return horizontalValue;
 					}
-					//Debug.Log("El input no es DONE ni Horizontal, así que devuelvo el valor Vertical " + Player1Vertical());
+					// Debug.Log("El input no es DONE ni Horizontal, así que devuelvo el valor Vertical " + Player1Vertical());
 					return Player1Vertical();
 				} else {
-					//Debug.Log("El input vertical es DONE");
+					// Debug.Log("El input vertical es DONE");
 					// Si el jugador sigue manteniendo el botón y no es IDLE, seguirá retornando DONE
 					if(Player1Vertical() != InputType.PLAYER1_IDLE) {
-						//Debug.Log("El usuario está manteniendo la dirección vertical " + Player1Vertical() + " así que sigo devolviendo DONE");
+						// Debug.Log("El usuario está manteniendo la dirección vertical " + Player1Vertical() + " así que sigo devolviendo DONE");
 						return InputType.PLAYER1_DONE;
 					}
 					// Si el jugador ha soltado el botón, devuelve IDLE
-					//Debug.Log("El usuario ha soltado el botón vertical, devuelvo IDLE");
+					// Debug.Log("El usuario ha soltado el botón vertical, devuelvo IDLE");
 					return InputType.PLAYER1_IDLE;
 				}
 			case 2:
@@ -618,14 +618,29 @@ public static class InputManager {
 	}
 
 	public static InputType CalculateIdle(int controller, InputType input) {
-		// Mientras haya input horizontal o vertical, devuelve lo que era.
-		if(Horizontal(controller, GetIdle(controller)) != GetIdle(controller)
-			|| Vertical(controller, GetIdle(controller)) != GetIdle(controller)) {
-			//Debug.Log("****Sigue habiendo botones pulsados, devuelvo " + input);
+		// Debug.Log("CalculateIdle");
+		// Debug.Log("input = " + input);
+		InputType idle = GetIdle(controller);
+		InputType done = GetDone(controller);
+		InputType horizontal = Horizontal(controller, input);
+		InputType vertical = Vertical(controller, input);
+		// Si no es DONE y hay input XY, devuelvo ese input
+		if(input != done && (horizontal != idle || vertical != idle)) {
+			if(horizontal != idle)
+				input = horizontal;
+			else if(vertical != idle)
+				input = vertical;
+			// Debug.Log("****INPUT XY, devuelvo " + input);
 			return input;
+		} else if(input == done && (horizontal != idle || vertical != idle)) {
+			// Si es DONE y hay input XY, sigo devolviendo DONE, porque sigue apretando y no ha soltado
+			// Debug.Log("****INPUT DONE y sigue aprentando, devuelvo DONE");
+			return done;
 		}
-		//Debug.Log("****El usuario ha soltado los botones horizontales y verticales! Devuelvo IDLE");
-		return GetIdle(controller);
+		
+		// Si no hay input horizontal o vertical, devuelvo IDLE, da igual el DONE
+		// Debug.Log("****NO INPUT XY, devuelvo IDLE");
+		return idle;
 	}
 
 }

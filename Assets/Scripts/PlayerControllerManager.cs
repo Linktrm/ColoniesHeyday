@@ -64,11 +64,11 @@ public class PlayerControllerManager : MonoBehaviour {
 		player4Finished = false;
 		player5Finished = false;
 
-		player1SelectedPlayer = 1;
-		player2SelectedPlayer = 1;
-		player3SelectedPlayer = 1;
-		player4SelectedPlayer = 1;
-		player5SelectedPlayer = 1;
+		player1SelectedPlayer = 0;
+		player2SelectedPlayer = 0;
+		player3SelectedPlayer = 0;
+		player4SelectedPlayer = 0;
+		player5SelectedPlayer = 0;
 
 		controllerPlayer1 = -1;
 		controllerPlayer2 = -1;
@@ -123,20 +123,21 @@ public class PlayerControllerManager : MonoBehaviour {
 			if(!player1Finished) {
 				player1Input = InputManager.CalculateIdle(controllerPlayer1, player1Input);
 
-				if(player1Input == InputManager.GetIdle(controllerPlayer1)) {
-					player1Input = MoveCursor(InputManager.Horizontal(controllerPlayer1, player1Input), InputManager.Vertical(controllerPlayer1, player1Input), controllerPlayer1, player1SelectedPlayer, PanelPlayer1);
-				}
+				if(player1Input != InputManager.GetIdle(controllerPlayer1))
+					player1Input = MoveCursor(player1Input, controllerPlayer1, 1, PanelPlayer1);
 
 				// SUBMIT
 				if(InputManager.Submit(controllerPlayer1)) {
 					// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
 					if(!listPlayersAvailable[player1SelectedPlayer].selected) {
+						Debug.Log("¡PLAYER 1 HA SELECCIONADO NOMBRE!");
 						player1Finished = true;
 						listPlayersAvailable[player1SelectedPlayer].selected = true;
 						listPlayersAvailable[player1SelectedPlayer].controller = controllerPlayer1;
 						PanelPlayer1.transform.Find("PanelFinished").gameObject.SetActive(true);
 					} else {
 						// TODO SONIDO NO SELECCIONABLE
+						Debug.Log("¡PLAYER 1 NO PUEDE ELEGIR ESE NOMBRE!");
 					}
 				}
 			}
@@ -144,12 +145,14 @@ public class PlayerControllerManager : MonoBehaviour {
 			if(InputManager.Cancel(controllerPlayer1)) {
 				// Si el Player ya había acabado, desactiva FINISHED
 				if(player1Finished) {
+					Debug.Log("¡PLAYER 1 HA CANCELADO EL NOMBRE!");
 					player1Finished = false;
 					listPlayersAvailable[player1SelectedPlayer].selected = false;
 					listPlayersAvailable[player1SelectedPlayer].controller = -1;
 					PanelPlayer1.transform.Find("PanelFinished").gameObject.SetActive(false);
 				// Si aún no se había elegido Player, desasigna el mando
 				} else {
+					Debug.Log("¡PLAYER 1 SE HA IDO!");
 					controllerPlayer1 = -1;
 					PanelPlayer1NoSelected.SetActive(true);
 					PanelPlayer1.SetActive(false);
@@ -157,65 +160,65 @@ public class PlayerControllerManager : MonoBehaviour {
 			}
 		// Si no se ha asignado mando al Player 1
 		} else {
-			//Debug.Log("Esperando Input para Player 1");
+			// Debug.Log("Esperando Input para Player 1...");
 			if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
-				controller1Input = InputManager.Submit(1) ? InputManager.GetDone(1) : InputManager.GetIdle(1);
-				controller1Input = InputManager.Horizontal(1, controller1Input);
-				controller1Input = InputManager.Vertical(1, controller1Input);
+				controller1Input = InputManager.CalculateIdle(1, controller1Input);
 				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller1Input != InputManager.GetIdle(1)) {
+				if(controller1Input == InputManager.GetIdle(1)) {
+					controller1Input = DetectInput(controller1Input, 1);
+				} else {
 					controllerPlayer1 = 1;
 					PanelPlayer1NoSelected.SetActive(false);
 					PanelPlayer1.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer1+" al Player 1");
+					Debug.Log("PLAYER 1 ACTIVADO CON MANDO "+controllerPlayer1);
 				}
 			}
 			if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
-				controller2Input = InputManager.Submit(2) ? InputManager.GetDone(2) : InputManager.GetIdle(2);
-				controller2Input = InputManager.Horizontal(2, controller2Input);
-				controller2Input = InputManager.Vertical(2, controller2Input);
+				controller2Input = InputManager.CalculateIdle(2, controller2Input);
 				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller2Input != InputManager.GetIdle(2)) {
+				if(controller2Input == InputManager.GetIdle(2)) {
+					controller2Input = DetectInput(controller2Input, 2);
+				} else {
 					controllerPlayer1 = 2;
 					PanelPlayer1NoSelected.SetActive(false);
 					PanelPlayer1.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer1+" al Player 1");
+					Debug.Log("PLAYER 1 ACTIVADO CON MANDO "+controllerPlayer1);
 				}
 			}
 			if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
-				controller3Input = InputManager.Submit(3) ? InputManager.GetDone(3) : InputManager.GetIdle(3);
-				controller3Input = InputManager.Horizontal(3, controller3Input);
-				controller3Input = InputManager.Vertical(3, controller3Input);
+				controller3Input = InputManager.CalculateIdle(3, controller3Input);
 				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller3Input != InputManager.GetIdle(3)) {
+				if(controller3Input == InputManager.GetIdle(3)) {
+					controller3Input = DetectInput(controller3Input, 3);
+				} else {
 					controllerPlayer1 = 3;
 					PanelPlayer1NoSelected.SetActive(false);
 					PanelPlayer1.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer1+" al Player 1");
+					Debug.Log("PLAYER 1 ACTIVADO CON MANDO "+controllerPlayer1);
 				}
 			}
 			if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
-				controller4Input = InputManager.Submit(4) ? InputManager.GetDone(4) : InputManager.GetIdle(4);
-				controller4Input = InputManager.Horizontal(4, controller4Input);
-				controller4Input = InputManager.Vertical(4, controller4Input);
+				controller4Input = InputManager.CalculateIdle(4, controller4Input);
 				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller4Input != InputManager.GetIdle(4)) {
+				if(controller4Input == InputManager.GetIdle(4)) {
+					controller4Input = DetectInput(controller4Input, 4);
+				} else {
 					controllerPlayer1 = 4;
 					PanelPlayer1NoSelected.SetActive(false);
 					PanelPlayer1.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer1+" al Player 1");
+					Debug.Log("PLAYER 1 ACTIVADO CON MANDO "+controllerPlayer1);
 				}
 			}
 			if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
-				controller5Input = InputManager.Submit(5) ? InputManager.GetDone(5) : InputManager.GetIdle(5);
-				controller5Input = InputManager.Horizontal(5, controller5Input);
-				controller5Input = InputManager.Vertical(5, controller5Input);
+				controller5Input = InputManager.CalculateIdle(5, controller5Input);
 				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller5Input != InputManager.GetIdle(5)) {
+				if(controller5Input == InputManager.GetIdle(5)) {
+					controller5Input = DetectInput(controller5Input, 5);
+				} else {
 					controllerPlayer1 = 5;
 					PanelPlayer1NoSelected.SetActive(false);
 					PanelPlayer1.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer1+" al Player 1");
+					Debug.Log("PLAYER 1 ACTIVADO CON MANDO "+controllerPlayer1);
 				}
 			}
 		}
@@ -224,105 +227,111 @@ public class PlayerControllerManager : MonoBehaviour {
 		// CONTROLLER PLAYER 2
 		// ===================
 		
-		// Si ya se ha asignado un mando al Player 2
-		if(controllerPlayer2 != -1) {
-			// Si aún no ha elegido Player, puede mover el cursor
-			if(!player2Finished) {
-				player2Input = InputManager.CalculateIdle(controllerPlayer2, player2Input);
+		// Si ya he asignado un mando al Player 1
+		if(controllerPlayer1 != -1) {
+			// Si ya se ha asignado un mando al Player 2
+			if(controllerPlayer2 != -1) {
+				// Si aún no ha elegido Player, puede mover el cursor
+				if(!player2Finished) {
+					player2Input = InputManager.CalculateIdle(controllerPlayer2, player2Input);
 
-				if(player2Input == InputManager.GetIdle(controllerPlayer2)) {
-					player2Input = MoveCursor(InputManager.Horizontal(controllerPlayer2, player2Input), InputManager.Vertical(controllerPlayer2, player2Input), controllerPlayer2, player2SelectedPlayer, PanelPlayer2);
-				}
+					if(player2Input != InputManager.GetIdle(controllerPlayer2))
+						player2Input = MoveCursor(player2Input, controllerPlayer2, 2, PanelPlayer2);
 
-				// SUBMIT
-				if(InputManager.Submit(controllerPlayer2)) {
-					// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
-					if(!listPlayersAvailable[player2SelectedPlayer].selected) {
-						player2Finished = true;
-						listPlayersAvailable[player2SelectedPlayer].selected = true;
-						listPlayersAvailable[player2SelectedPlayer].controller = controllerPlayer2;
-						PanelPlayer2.transform.Find("PanelFinished").gameObject.SetActive(true);
-					} else {
-						// TODO SONIDO NO SELECCIONABLE
+					// SUBMIT
+					if(InputManager.Submit(controllerPlayer2)) {
+						// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
+						if(!listPlayersAvailable[player2SelectedPlayer].selected) {
+							Debug.Log("¡PLAYER 2 HA SELECCIONADO NOMBRE!");
+							player2Finished = true;
+							listPlayersAvailable[player2SelectedPlayer].selected = true;
+							listPlayersAvailable[player2SelectedPlayer].controller = controllerPlayer2;
+							PanelPlayer2.transform.Find("PanelFinished").gameObject.SetActive(true);
+						} else {
+							// TODO SONIDO NO SELECCIONABLE
+							Debug.Log("¡PLAYER 2 NO PUEDE ELEGIR ESE NOMBRE!");
+						}
 					}
 				}
-			}
-			// CANCEL
-			if(InputManager.Cancel(controllerPlayer2)) {
-				// Si el Player ya había acabado, desactiva FINISHED
-				if(player2Finished) {
-					player2Finished = false;
-					listPlayersAvailable[player2SelectedPlayer].selected = false;
-					listPlayersAvailable[player2SelectedPlayer].controller = -1;
-					PanelPlayer2.transform.Find("PanelFinished").gameObject.SetActive(false);
-				// Si aún no se había elegido Player, desasigna el mando
-				} else {
-					controllerPlayer2 = -1;
-					PanelPlayer2NoSelected.SetActive(true);
-					PanelPlayer2.SetActive(false);
+				// CANCEL
+				if(InputManager.Cancel(controllerPlayer2)) {
+					// Si el Player ya había acabado, desactiva FINISHED
+					if(player2Finished) {
+						Debug.Log("¡PLAYER 2 HA CANCELADO EL NOMBRE!");
+						player2Finished = false;
+						listPlayersAvailable[player2SelectedPlayer].selected = false;
+						listPlayersAvailable[player2SelectedPlayer].controller = -1;
+						PanelPlayer2.transform.Find("PanelFinished").gameObject.SetActive(false);
+					// Si aún no se había elegido Player, desasigna el mando
+					} else {
+						Debug.Log("¡PLAYER 2 SE HA IDO!");
+						controllerPlayer2 = -1;
+						PanelPlayer2NoSelected.SetActive(true);
+						PanelPlayer2.SetActive(false);
+					}
 				}
-			}
-		// Si no se ha asignado mando al Player 2 y los Player anteriores ya están asignados
-		} else if(controllerPlayer1 != -1) {
-			//Debug.Log("Esperando Input para Player 2");
-			if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
-				controller1Input = InputManager.Submit(1) ? InputManager.GetDone(1) : InputManager.GetIdle(1);
-				controller1Input = InputManager.Horizontal(1, controller1Input);
-				controller1Input = InputManager.Vertical(1, controller1Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller1Input != InputManager.GetIdle(1)) {
-					controllerPlayer2 = 1;
-					PanelPlayer2NoSelected.SetActive(false);
-					PanelPlayer2.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer2+" al Player 2");
+			// Si no se ha asignado mando al Player 2 y los Player anteriores ya están asignados
+			} else if(controllerPlayer1 != -1) {
+				//Debug.Log("Esperando Input para Player 2");
+				if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
+					controller1Input = InputManager.CalculateIdle(1, controller1Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller1Input == InputManager.GetIdle(1)) {
+						controller1Input = DetectInput(controller1Input, 1);
+					} else {
+						controllerPlayer2 = 1;
+						PanelPlayer2NoSelected.SetActive(false);
+						PanelPlayer2.SetActive(true);
+						Debug.Log("PLAYER 2 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
-				controller2Input = InputManager.Submit(2) ? InputManager.GetDone(2) : InputManager.GetIdle(2);
-				controller2Input = InputManager.Horizontal(2, controller2Input);
-				controller2Input = InputManager.Vertical(2, controller2Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller2Input != InputManager.GetIdle(2)) {
-					controllerPlayer2 = 2;
-					PanelPlayer2NoSelected.SetActive(false);
-					PanelPlayer2.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer2+" al Player 2");
+				if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
+					controller2Input = InputManager.CalculateIdle(2, controller2Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller2Input == InputManager.GetIdle(2)) {
+						controller2Input = DetectInput(controller2Input, 2);
+					} else {
+						controllerPlayer2 = 2;
+						PanelPlayer2NoSelected.SetActive(false);
+						PanelPlayer2.SetActive(true);
+						Debug.Log("PLAYER 2 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
-				controller3Input = InputManager.Submit(3) ? InputManager.GetDone(3) : InputManager.GetIdle(3);
-				controller3Input = InputManager.Horizontal(3, controller3Input);
-				controller3Input = InputManager.Vertical(3, controller3Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller3Input != InputManager.GetIdle(3)) {
-					controllerPlayer2 = 3;
-					PanelPlayer2NoSelected.SetActive(false);
-					PanelPlayer2.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer2+" al Player 2");
+				if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
+					controller3Input = InputManager.CalculateIdle(3, controller3Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller3Input == InputManager.GetIdle(3)) {
+						controller3Input = DetectInput(controller3Input, 3);
+					} else {
+						controllerPlayer2 = 3;
+						PanelPlayer2NoSelected.SetActive(false);
+						PanelPlayer2.SetActive(true);
+						Debug.Log("PLAYER 2 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
-				controller4Input = InputManager.Submit(4) ? InputManager.GetDone(4) : InputManager.GetIdle(4);
-				controller4Input = InputManager.Horizontal(4, controller4Input);
-				controller4Input = InputManager.Vertical(4, controller4Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller4Input != InputManager.GetIdle(4)) {
-					controllerPlayer2 = 4;
-					PanelPlayer2NoSelected.SetActive(false);
-					PanelPlayer2.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer2+" al Player 2");
+				if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
+					controller4Input = InputManager.CalculateIdle(4, controller4Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller4Input == InputManager.GetIdle(4)) {
+						controller4Input = DetectInput(controller4Input, 4);
+					} else {
+						controllerPlayer2 = 4;
+						PanelPlayer2NoSelected.SetActive(false);
+						PanelPlayer2.SetActive(true);
+						Debug.Log("PLAYER 2 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
-				controller5Input = InputManager.Submit(5) ? InputManager.GetDone(5) : InputManager.GetIdle(5);
-				controller5Input = InputManager.Horizontal(5, controller5Input);
-				controller5Input = InputManager.Vertical(5, controller5Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller5Input != InputManager.GetIdle(5)) {
-					controllerPlayer2 = 5;
-					PanelPlayer2NoSelected.SetActive(false);
-					PanelPlayer2.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer2+" al Player 2");
+				if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
+					controller5Input = InputManager.CalculateIdle(5, controller5Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller5Input == InputManager.GetIdle(5)) {
+						controller5Input = DetectInput(controller5Input, 5);
+					} else {
+						controllerPlayer2 = 5;
+						PanelPlayer2NoSelected.SetActive(false);
+						PanelPlayer2.SetActive(true);
+						Debug.Log("PLAYER 2 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
 			}
 		}
@@ -331,105 +340,111 @@ public class PlayerControllerManager : MonoBehaviour {
 		// CONTROLLER PLAYER 3
 		// ===================
 		
-		// Si ya se ha asignado un mando al Player 3
-		if(controllerPlayer3 != -1) {
-			// Si aún no ha elegido Player, puede mover el cursor
-			if(!player3Finished) {
-				player3Input = InputManager.CalculateIdle(controllerPlayer3, player3Input);
+		// Si ya he asignado un mando al Player 2
+		if(controllerPlayer2 != -1) {
+			// Si ya se ha asignado un mando al Player 3
+			if(controllerPlayer3 != -1) {
+				// Si aún no ha elegido Player, puede mover el cursor
+				if(!player3Finished) {
+					player3Input = InputManager.CalculateIdle(controllerPlayer3, player3Input);
 
-				if(player3Input == InputManager.GetIdle(controllerPlayer3)) {
-					player3Input = MoveCursor(InputManager.Horizontal(controllerPlayer3, player3Input), InputManager.Vertical(controllerPlayer3, player3Input), controllerPlayer3, player3SelectedPlayer, PanelPlayer3);
-				}
+					if(player3Input != InputManager.GetIdle(controllerPlayer3))
+						player3Input = MoveCursor(player3Input, controllerPlayer3, 3, PanelPlayer3);
 
-				// SUBMIT
-				if(InputManager.Submit(controllerPlayer3)) {
-					// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
-					if(!listPlayersAvailable[player3SelectedPlayer].selected) {
-						player3Finished = true;
-						listPlayersAvailable[player3SelectedPlayer].selected = true;
-						listPlayersAvailable[player3SelectedPlayer].controller = controllerPlayer3;
-						PanelPlayer3.transform.Find("PanelFinished").gameObject.SetActive(true);
-					} else {
-						// TODO SONIDO NO SELECCIONABLE
+					// SUBMIT
+					if(InputManager.Submit(controllerPlayer3)) {
+						// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
+						if(!listPlayersAvailable[player3SelectedPlayer].selected) {
+							Debug.Log("¡PLAYER 3 HA SELECCIONADO NOMBRE!");
+							player3Finished = true;
+							listPlayersAvailable[player3SelectedPlayer].selected = true;
+							listPlayersAvailable[player3SelectedPlayer].controller = controllerPlayer3;
+							PanelPlayer3.transform.Find("PanelFinished").gameObject.SetActive(true);
+						} else {
+							// TODO SONIDO NO SELECCIONABLE
+							Debug.Log("¡PLAYER 3 NO PUEDE ELEGIR ESE NOMBRE!");
+						}
 					}
 				}
-			}
-			// CANCEL
-			if(InputManager.Cancel(controllerPlayer3)) {
-				// Si el Player ya había acabado, desactiva FINISHED
-				if(player3Finished) {
-					player3Finished = false;
-					listPlayersAvailable[player3SelectedPlayer].selected = false;
-					listPlayersAvailable[player3SelectedPlayer].controller = -1;
-					PanelPlayer3.transform.Find("PanelFinished").gameObject.SetActive(false);
-				// Si aún no se había elegido Player, desasigna el mando
-				} else {
-					controllerPlayer3 = -1;
-					PanelPlayer3NoSelected.SetActive(true);
-					PanelPlayer3.SetActive(false);
+				// CANCEL
+				if(InputManager.Cancel(controllerPlayer3)) {
+					// Si el Player ya había acabado, desactiva FINISHED
+					if(player3Finished) {
+						Debug.Log("¡PLAYER 3 HA CANCELADO EL NOMBRE!");
+						player3Finished = false;
+						listPlayersAvailable[player3SelectedPlayer].selected = false;
+						listPlayersAvailable[player3SelectedPlayer].controller = -1;
+						PanelPlayer3.transform.Find("PanelFinished").gameObject.SetActive(false);
+					// Si aún no se había elegido Player, desasigna el mando
+					} else {
+						Debug.Log("¡PLAYER 3 SE HA IDO!");
+						controllerPlayer3 = -1;
+						PanelPlayer3NoSelected.SetActive(true);
+						PanelPlayer3.SetActive(false);
+					}
 				}
-			}
-		// Si no se ha asignado mando al Player 3 y los Player anteriores ya están asignados
-		} else if(controllerPlayer1 != -1 && controllerPlayer2 != -1) {
-			//Debug.Log("Esperando Input para Player 3");
-			if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
-				controller1Input = InputManager.Submit(1) ? InputManager.GetDone(1) : InputManager.GetIdle(1);
-				controller1Input = InputManager.Horizontal(1, controller1Input);
-				controller1Input = InputManager.Vertical(1, controller1Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller1Input != InputManager.GetIdle(1)) {
-					controllerPlayer3 = 1;
-					PanelPlayer3NoSelected.SetActive(false);
-					PanelPlayer3.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer3+" al Player 3");
+			// Si no se ha asignado mando al Player 3 y los Player anteriores ya están asignados
+			} else if(controllerPlayer1 != -1 && controllerPlayer2 != -1) {
+				//Debug.Log("Esperando Input para Player 3");
+				if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
+					controller1Input = InputManager.CalculateIdle(1, controller1Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller1Input == InputManager.GetIdle(1)) {
+						controller1Input = DetectInput(controller1Input, 1);
+					} else {
+						controllerPlayer3 = 1;
+						PanelPlayer3NoSelected.SetActive(false);
+						PanelPlayer3.SetActive(true);
+						Debug.Log("PLAYER 3 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
-				controller2Input = InputManager.Submit(2) ? InputManager.GetDone(2) : InputManager.GetIdle(2);
-				controller2Input = InputManager.Horizontal(2, controller2Input);
-				controller2Input = InputManager.Vertical(2, controller2Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller2Input != InputManager.GetIdle(2)) {
-					controllerPlayer3 = 2;
-					PanelPlayer3NoSelected.SetActive(false);
-					PanelPlayer3.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer3+" al Player 3");
+				if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
+					controller2Input = InputManager.CalculateIdle(2, controller2Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller2Input == InputManager.GetIdle(2)) {
+						controller2Input = DetectInput(controller2Input, 2);
+					} else {
+						controllerPlayer3 = 2;
+						PanelPlayer3NoSelected.SetActive(false);
+						PanelPlayer3.SetActive(true);
+						Debug.Log("PLAYER 3 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
-				controller3Input = InputManager.Submit(3) ? InputManager.GetDone(3) : InputManager.GetIdle(3);
-				controller3Input = InputManager.Horizontal(3, controller3Input);
-				controller3Input = InputManager.Vertical(3, controller3Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller3Input != InputManager.GetIdle(3)) {
-					controllerPlayer3 = 3;
-					PanelPlayer3NoSelected.SetActive(false);
-					PanelPlayer3.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer3+" al Player 3");
+				if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
+					controller3Input = InputManager.CalculateIdle(3, controller3Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller3Input == InputManager.GetIdle(3)) {
+						controller3Input = DetectInput(controller3Input, 3);
+					} else {
+						controllerPlayer3 = 3;
+						PanelPlayer3NoSelected.SetActive(false);
+						PanelPlayer3.SetActive(true);
+						Debug.Log("PLAYER 3 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
-				controller4Input = InputManager.Submit(4) ? InputManager.GetDone(4) : InputManager.GetIdle(4);
-				controller4Input = InputManager.Horizontal(4, controller4Input);
-				controller4Input = InputManager.Vertical(4, controller4Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller4Input != InputManager.GetIdle(4)) {
-					controllerPlayer3 = 4;
-					PanelPlayer3NoSelected.SetActive(false);
-					PanelPlayer3.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer3+" al Player 3");
+				if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
+					controller4Input = InputManager.CalculateIdle(4, controller4Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller4Input == InputManager.GetIdle(4)) {
+						controller4Input = DetectInput(controller4Input, 4);
+					} else {
+						controllerPlayer3 = 4;
+						PanelPlayer3NoSelected.SetActive(false);
+						PanelPlayer3.SetActive(true);
+						Debug.Log("PLAYER 3 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
-				controller5Input = InputManager.Submit(5) ? InputManager.GetDone(5) : InputManager.GetIdle(5);
-				controller5Input = InputManager.Horizontal(5, controller5Input);
-				controller5Input = InputManager.Vertical(5, controller5Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller5Input != InputManager.GetIdle(5)) {
-					controllerPlayer3 = 5;
-					PanelPlayer3NoSelected.SetActive(false);
-					PanelPlayer3.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer3+" al Player 3");
+				if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
+					controller5Input = InputManager.CalculateIdle(5, controller5Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller5Input == InputManager.GetIdle(5)) {
+						controller5Input = DetectInput(controller5Input, 5);
+					} else {
+						controllerPlayer3 = 5;
+						PanelPlayer3NoSelected.SetActive(false);
+						PanelPlayer3.SetActive(true);
+						Debug.Log("PLAYER 3 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
 			}
 		}
@@ -438,105 +453,111 @@ public class PlayerControllerManager : MonoBehaviour {
 		// CONTROLLER PLAYER 4
 		// ===================
 		
-		// Si ya se ha asignado un mando al Player 4
-		if(controllerPlayer4 != -1) {
-			// Si aún no ha elegido Player, puede mover el cursor
-			if(!player4Finished) {
-				player4Input = InputManager.CalculateIdle(controllerPlayer4, player4Input);
+		// Si ya he asignado un mando al Player 3
+		if(controllerPlayer3 != -1) {
+			// Si ya se ha asignado un mando al Player 4
+			if(controllerPlayer4 != -1) {
+				// Si aún no ha elegido Player, puede mover el cursor
+				if(!player4Finished) {
+					player4Input = InputManager.CalculateIdle(controllerPlayer4, player4Input);
 
-				if(player4Input == InputManager.GetIdle(controllerPlayer4)) {
-					player4Input = MoveCursor(InputManager.Horizontal(controllerPlayer4, player4Input), InputManager.Vertical(controllerPlayer4, player4Input), controllerPlayer4, player4SelectedPlayer, PanelPlayer4);
-				}
+					if(player4Input != InputManager.GetIdle(controllerPlayer4))
+						player4Input = MoveCursor(player4Input, controllerPlayer4, 4, PanelPlayer4);
 
-				// SUBMIT
-				if(InputManager.Submit(controllerPlayer4)) {
-					// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
-					if(!listPlayersAvailable[player4SelectedPlayer].selected) {
-						player4Finished = true;
-						listPlayersAvailable[player4SelectedPlayer].selected = true;
-						listPlayersAvailable[player4SelectedPlayer].controller = controllerPlayer4;
-						PanelPlayer4.transform.Find("PanelFinished").gameObject.SetActive(true);
-					} else {
-						// TODO SONIDO NO SELECCIONABLE
+					// SUBMIT
+					if(InputManager.Submit(controllerPlayer4)) {
+						// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
+						if(!listPlayersAvailable[player4SelectedPlayer].selected) {
+							Debug.Log("¡PLAYER 4 HA SELECCIONADO NOMBRE!");
+							player4Finished = true;
+							listPlayersAvailable[player4SelectedPlayer].selected = true;
+							listPlayersAvailable[player4SelectedPlayer].controller = controllerPlayer4;
+							PanelPlayer4.transform.Find("PanelFinished").gameObject.SetActive(true);
+						} else {
+							// TODO SONIDO NO SELECCIONABLE
+							Debug.Log("¡PLAYER 4 NO PUEDE ELEGIR ESE NOMBRE!");
+						}
 					}
 				}
-			}
-			// CANCEL
-			if(InputManager.Cancel(controllerPlayer4)) {
-				// Si el Player ya había acabado, desactiva FINISHED
-				if(player4Finished) {
-					player4Finished = false;
-					listPlayersAvailable[player4SelectedPlayer].selected = false;
-					listPlayersAvailable[player4SelectedPlayer].controller = -1;
-					PanelPlayer4.transform.Find("PanelFinished").gameObject.SetActive(false);
-				// Si aún no se había elegido Player, desasigna el mando
-				} else {
-					controllerPlayer4 = -1;
-					PanelPlayer4NoSelected.SetActive(true);
-					PanelPlayer4.SetActive(false);
+				// CANCEL
+				if(InputManager.Cancel(controllerPlayer4)) {
+					// Si el Player ya había acabado, desactiva FINISHED
+					if(player4Finished) {
+						Debug.Log("¡PLAYER 4 HA CANCELADO EL NOMBRE!");
+						player4Finished = false;
+						listPlayersAvailable[player4SelectedPlayer].selected = false;
+						listPlayersAvailable[player4SelectedPlayer].controller = -1;
+						PanelPlayer4.transform.Find("PanelFinished").gameObject.SetActive(false);
+					// Si aún no se había elegido Player, desasigna el mando
+					} else {
+						Debug.Log("¡PLAYER 4 SE HA IDO!");
+						controllerPlayer4 = -1;
+						PanelPlayer4NoSelected.SetActive(true);
+						PanelPlayer4.SetActive(false);
+					}
 				}
-			}
-		// Si no se ha asignado mando al Player 4 y los Player anteriores ya están asignados
-		} else if(controllerPlayer1 != -1 && controllerPlayer2 != -1 && controllerPlayer3 != -1) {
-			//Debug.Log("Esperando Input para Player 4");
-			if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
-				controller1Input = InputManager.Submit(1) ? InputManager.GetDone(1) : InputManager.GetIdle(1);
-				controller1Input = InputManager.Horizontal(1, controller1Input);
-				controller1Input = InputManager.Vertical(1, controller1Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller1Input != InputManager.GetIdle(1)) {
-					controllerPlayer4 = 1;
-					PanelPlayer4NoSelected.SetActive(false);
-					PanelPlayer4.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer4+" al Player 4");
+			// Si no se ha asignado mando al Player 4 y los Player anteriores ya están asignados
+			} else if(controllerPlayer1 != -1 && controllerPlayer2 != -1 && controllerPlayer3 != -1) {
+				//Debug.Log("Esperando Input para Player 4");
+				if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
+					controller1Input = InputManager.CalculateIdle(1, controller1Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller1Input == InputManager.GetIdle(1)) {
+						controller1Input = DetectInput(controller1Input, 1);
+					} else {
+						controllerPlayer4 = 1;
+						PanelPlayer4NoSelected.SetActive(false);
+						PanelPlayer4.SetActive(true);
+						Debug.Log("PLAYER 4 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
-				controller2Input = InputManager.Submit(2) ? InputManager.GetDone(2) : InputManager.GetIdle(2);
-				controller2Input = InputManager.Horizontal(2, controller2Input);
-				controller2Input = InputManager.Vertical(2, controller2Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller2Input != InputManager.GetIdle(2)) {
-					controllerPlayer4 = 2;
-					PanelPlayer4NoSelected.SetActive(false);
-					PanelPlayer4.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer4+" al Player 4");
+				if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
+					controller2Input = InputManager.CalculateIdle(2, controller2Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller2Input == InputManager.GetIdle(2)) {
+						controller2Input = DetectInput(controller2Input, 2);
+					} else {
+						controllerPlayer4 = 2;
+						PanelPlayer4NoSelected.SetActive(false);
+						PanelPlayer4.SetActive(true);
+						Debug.Log("PLAYER 4 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
-				controller3Input = InputManager.Submit(3) ? InputManager.GetDone(3) : InputManager.GetIdle(3);
-				controller3Input = InputManager.Horizontal(3, controller3Input);
-				controller3Input = InputManager.Vertical(3, controller3Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller3Input != InputManager.GetIdle(3)) {
-					controllerPlayer4 = 3;
-					PanelPlayer4NoSelected.SetActive(false);
-					PanelPlayer4.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer4+" al Player 4");
+				if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
+					controller3Input = InputManager.CalculateIdle(3, controller3Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller3Input == InputManager.GetIdle(3)) {
+						controller3Input = DetectInput(controller3Input, 3);
+					} else {
+						controllerPlayer4 = 3;
+						PanelPlayer4NoSelected.SetActive(false);
+						PanelPlayer4.SetActive(true);
+						Debug.Log("PLAYER 4 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
-				controller4Input = InputManager.Submit(4) ? InputManager.GetDone(4) : InputManager.GetIdle(4);
-				controller4Input = InputManager.Horizontal(4, controller4Input);
-				controller4Input = InputManager.Vertical(4, controller4Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller4Input != InputManager.GetIdle(4)) {
-					controllerPlayer4 = 4;
-					PanelPlayer4NoSelected.SetActive(false);
-					PanelPlayer4.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer4+" al Player 4");
+				if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
+					controller4Input = InputManager.CalculateIdle(4, controller4Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller4Input == InputManager.GetIdle(4)) {
+						controller4Input = DetectInput(controller4Input, 4);
+					} else {
+						controllerPlayer4 = 4;
+						PanelPlayer4NoSelected.SetActive(false);
+						PanelPlayer4.SetActive(true);
+						Debug.Log("PLAYER 4 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
-				controller5Input = InputManager.Submit(5) ? InputManager.GetDone(5) : InputManager.GetIdle(5);
-				controller5Input = InputManager.Horizontal(5, controller5Input);
-				controller5Input = InputManager.Vertical(5, controller5Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller5Input != InputManager.GetIdle(5)) {
-					controllerPlayer4 = 5;
-					PanelPlayer4NoSelected.SetActive(false);
-					PanelPlayer4.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer4+" al Player 4");
+				if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
+					controller5Input = InputManager.CalculateIdle(5, controller5Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller5Input == InputManager.GetIdle(5)) {
+						controller5Input = DetectInput(controller5Input, 5);
+					} else {
+						controllerPlayer4 = 5;
+						PanelPlayer4NoSelected.SetActive(false);
+						PanelPlayer4.SetActive(true);
+						Debug.Log("PLAYER 4 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
 			}
 		}
@@ -545,149 +566,211 @@ public class PlayerControllerManager : MonoBehaviour {
 		// CONTROLLER PLAYER 5
 		// ===================
 		
-		// Si ya se ha asignado un mando al Player 5
-		if(controllerPlayer5 != -1) {
-			// Si aún no ha elegido Player, puede mover el cursor
-			if(!player5Finished) {
-				player5Input = InputManager.CalculateIdle(controllerPlayer5, player5Input);
+		// Si ya he asignado un mando al Player 4
+		if(controllerPlayer4 != -1) {
+			// Si ya se ha asignado un mando al Player 5
+			if(controllerPlayer5 != -1) {
+				// Si aún no ha elegido Player, puede mover el cursor
+				if(!player5Finished) {
+					player5Input = InputManager.CalculateIdle(controllerPlayer5, player5Input);
 
-				if(player5Input == InputManager.GetIdle(controllerPlayer5)) {
-					player5Input = MoveCursor(InputManager.Horizontal(controllerPlayer5, player5Input), InputManager.Vertical(controllerPlayer5, player5Input), controllerPlayer5, player5SelectedPlayer, PanelPlayer5);
-				}
+					if(player5Input != InputManager.GetIdle(controllerPlayer5))
+						player5Input = MoveCursor(player5Input, controllerPlayer5, 5, PanelPlayer5);
 
-				// SUBMIT
-				if(InputManager.Submit(controllerPlayer5)) {
-					// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
-					if(!listPlayersAvailable[player5SelectedPlayer].selected) {
-						player5Finished = true;
-						listPlayersAvailable[player5SelectedPlayer].selected = true;
-						listPlayersAvailable[player5SelectedPlayer].controller = controllerPlayer5;
-						PanelPlayer5.transform.Find("PanelFinished").gameObject.SetActive(true);
-					} else {
-						// TODO SONIDO NO SELECCIONABLE
+					// SUBMIT
+					if(InputManager.Submit(controllerPlayer5)) {
+						// Si el Player seleccionado no ha sido seleccionado por otro, lo selecciona
+						if(!listPlayersAvailable[player5SelectedPlayer].selected) {
+							Debug.Log("¡PLAYER 5 HA SELECCIONADO NOMBRE!");
+							player5Finished = true;
+							listPlayersAvailable[player5SelectedPlayer].selected = true;
+							listPlayersAvailable[player5SelectedPlayer].controller = controllerPlayer5;
+							PanelPlayer5.transform.Find("PanelFinished").gameObject.SetActive(true);
+						} else {
+							// TODO SONIDO NO SELECCIONABLE
+							Debug.Log("¡PLAYER 5 NO PUEDE ELEGIR ESE NOMBRE!");
+						}
 					}
 				}
-			}
-			// CANCEL
-			if(InputManager.Cancel(controllerPlayer5)) {
-				// Si el Player ya había acabado, desactiva FINISHED
-				if(player5Finished) {
-					player5Finished = false;
-					listPlayersAvailable[player5SelectedPlayer].selected = false;
-					listPlayersAvailable[player5SelectedPlayer].controller = -1;
-					PanelPlayer5.transform.Find("PanelFinished").gameObject.SetActive(false);
-				// Si aún no se había elegido Player, desasigna el mando
-				} else {
-					controllerPlayer5 = -1;
-					PanelPlayer5NoSelected.SetActive(true);
-					PanelPlayer5.SetActive(false);
+				// CANCEL
+				if(InputManager.Cancel(controllerPlayer5)) {
+					// Si el Player ya había acabado, desactiva FINISHED
+					if(player5Finished) {
+						Debug.Log("¡PLAYER 5 HA CANCELADO EL NOMBRE!");
+						player5Finished = false;
+						listPlayersAvailable[player5SelectedPlayer].selected = false;
+						listPlayersAvailable[player5SelectedPlayer].controller = -1;
+						PanelPlayer5.transform.Find("PanelFinished").gameObject.SetActive(false);
+					// Si aún no se había elegido Player, desasigna el mando
+					} else {
+						Debug.Log("¡PLAYER 5 SE HA IDO!");
+						controllerPlayer5 = -1;
+						PanelPlayer5NoSelected.SetActive(true);
+						PanelPlayer5.SetActive(false);
+					}
 				}
-			}
-		// Si no se ha asignado mando al Player 5 y los Player anteriores ya están asignados
-		} else if(controllerPlayer1 != -1 && controllerPlayer2 != -1 && controllerPlayer3 != -1 && controllerPlayer4 != -1) {
-			//Debug.Log("Esperando Input para Player 5");
-			if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
-				controller1Input = InputManager.Submit(1) ? InputManager.GetDone(1) : InputManager.GetIdle(1);
-				controller1Input = InputManager.Horizontal(1, controller1Input);
-				controller1Input = InputManager.Vertical(1, controller1Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller1Input != InputManager.GetIdle(1)) {
-					controllerPlayer5 = 1;
-					PanelPlayer5NoSelected.SetActive(false);
-					PanelPlayer5.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer5+" al Player 5");
+			// Si no se ha asignado mando al Player 5 y los Player anteriores ya están asignados
+			} else if(controllerPlayer1 != -1 && controllerPlayer2 != -1 && controllerPlayer3 != -1 && controllerPlayer4 != -1) {
+				//Debug.Log("Esperando Input para Player 5");
+				if(ControllerNotAssigned(1)) { // Si el mando 1 no está asignado a nadie
+					controller1Input = InputManager.CalculateIdle(1, controller1Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller1Input == InputManager.GetIdle(1)) {
+						controller1Input = DetectInput(controller1Input, 1);
+					} else {
+						controllerPlayer5 = 1;
+						PanelPlayer5NoSelected.SetActive(false);
+						PanelPlayer5.SetActive(true);
+						Debug.Log("PLAYER 5 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
-				controller2Input = InputManager.Submit(2) ? InputManager.GetDone(2) : InputManager.GetIdle(2);
-				controller2Input = InputManager.Horizontal(2, controller2Input);
-				controller2Input = InputManager.Vertical(2, controller2Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller2Input != InputManager.GetIdle(2)) {
-					controllerPlayer5 = 2;
-					PanelPlayer5NoSelected.SetActive(false);
-					PanelPlayer5.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer5+" al Player 5");
+				if(ControllerNotAssigned(2)) { // Si el mando 2 no está asignado a nadie
+					controller2Input = InputManager.CalculateIdle(2, controller2Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller2Input == InputManager.GetIdle(2)) {
+						controller2Input = DetectInput(controller2Input, 2);
+					} else {
+						controllerPlayer5 = 2;
+						PanelPlayer5NoSelected.SetActive(false);
+						PanelPlayer5.SetActive(true);
+						Debug.Log("PLAYER 5 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
-				controller3Input = InputManager.Submit(3) ? InputManager.GetDone(3) : InputManager.GetIdle(3);
-				controller3Input = InputManager.Horizontal(3, controller3Input);
-				controller3Input = InputManager.Vertical(3, controller3Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller3Input != InputManager.GetIdle(3)) {
-					controllerPlayer5 = 3;
-					PanelPlayer5NoSelected.SetActive(false);
-					PanelPlayer5.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer5+" al Player 5");
+				if(ControllerNotAssigned(3)) { // Si el mando 3 no está asignado a nadie
+					controller3Input = InputManager.CalculateIdle(3, controller3Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller3Input == InputManager.GetIdle(3)) {
+						controller3Input = DetectInput(controller3Input, 3);
+					} else {
+						controllerPlayer5 = 3;
+						PanelPlayer5NoSelected.SetActive(false);
+						PanelPlayer5.SetActive(true);
+						Debug.Log("PLAYER 5 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
-				controller4Input = InputManager.Submit(4) ? InputManager.GetDone(4) : InputManager.GetIdle(4);
-				controller4Input = InputManager.Horizontal(4, controller4Input);
-				controller4Input = InputManager.Vertical(4, controller4Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller4Input != InputManager.GetIdle(4)) {
-					controllerPlayer5 = 4;
-					PanelPlayer5NoSelected.SetActive(false);
-					PanelPlayer5.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer5+" al Player 5");
+				if(ControllerNotAssigned(4)) { // Si el mando 4 no está asignado a nadie
+					controller4Input = InputManager.CalculateIdle(4, controller4Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller4Input == InputManager.GetIdle(4)) {
+						controller4Input = DetectInput(controller4Input, 4);
+					} else {
+						controllerPlayer5 = 4;
+						PanelPlayer5NoSelected.SetActive(false);
+						PanelPlayer5.SetActive(true);
+						Debug.Log("PLAYER 5 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
-			}
-			if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
-				controller5Input = InputManager.Submit(5) ? InputManager.GetDone(5) : InputManager.GetIdle(5);
-				controller5Input = InputManager.Horizontal(5, controller5Input);
-				controller5Input = InputManager.Vertical(5, controller5Input);
-				// En cuanto se reciba un input, se asigna el número del mando al Player
-				if(controller5Input != InputManager.GetIdle(5)) {
-					controllerPlayer5 = 5;
-					PanelPlayer5NoSelected.SetActive(false);
-					PanelPlayer5.SetActive(true);
-					Debug.Log("Asignamos el mando "+controllerPlayer5+" al Player 5");
+				if(ControllerNotAssigned(5)) { // Si el mando 5 no está asignado a nadie
+					controller5Input = InputManager.CalculateIdle(5, controller5Input);
+					// En cuanto se reciba un input, se asigna el número del mando al Player
+					if(controller5Input == InputManager.GetIdle(5)) {
+						controller5Input = DetectInput(controller5Input, 5);
+					} else {
+						controllerPlayer5 = 5;
+						PanelPlayer5NoSelected.SetActive(false);
+						PanelPlayer5.SetActive(true);
+						Debug.Log("PLAYER 5 ACTIVADO CON MANDO "+controllerPlayer1);
+					}
 				}
 			}
 		}
 	}
 
 	bool ControllerNotAssigned(int controllerNumber) {
-		if(controllerPlayer1 != controllerNumber && controllerPlayer2 != controllerNumber && controllerPlayer3 != controllerNumber && controllerPlayer4 != controllerNumber && controllerPlayer5 != controllerNumber) {
-			return true;
-		}
-		return false;
+		return controllerPlayer1 != controllerNumber 
+			&& controllerPlayer2 != controllerNumber 
+			&& controllerPlayer3 != controllerNumber 
+			&& controllerPlayer4 != controllerNumber 
+			&& controllerPlayer5 != controllerNumber;
 	}
 
-	public InputType MoveCursor(InputType inputX, InputType inputY, int playerController, int playerSelected, GameObject panelPlayer) {
-		if(inputX == InputManager.GetLeft(playerController)) { // Izquierda
-			while(!listPlayersAvailable[playerSelected].selected) {
-				if(playerSelected-1 < 0) {
-					playerSelected = listPlayersAvailable.Count-1;
-				} else {
-					playerSelected--;
-				}
+	public InputType MoveCursor(InputType input, int playerController, int player, GameObject panelPlayer) {
+		if(input == InputManager.GetLeft(playerController)) { // Izquierda
+			// Debug.Log("ACCIÓN IZQUIERDA");
+			string playerText = "";
+			switch(player) {
+				case 1:
+					player1SelectedPlayer--;
+					if(player1SelectedPlayer < 0) player1SelectedPlayer = listPlayersAvailable.Count-1;
+					playerText = listPlayersAvailable[player1SelectedPlayer].nickname;
+					break;
+				case 2:
+					player2SelectedPlayer--;
+					if(player2SelectedPlayer < 0) player2SelectedPlayer = listPlayersAvailable.Count-1;
+					playerText = listPlayersAvailable[player2SelectedPlayer].nickname;
+					break;
+				case 3:
+					player3SelectedPlayer--;
+					if(player3SelectedPlayer < 0) player3SelectedPlayer = listPlayersAvailable.Count-1;
+					playerText = listPlayersAvailable[player3SelectedPlayer].nickname;
+					break;
+				case 4:
+					player4SelectedPlayer--;
+					if(player4SelectedPlayer < 0) player4SelectedPlayer = listPlayersAvailable.Count-1;
+					playerText = listPlayersAvailable[player4SelectedPlayer].nickname;
+					break;
+				case 5:
+					player5SelectedPlayer--;
+					if(player5SelectedPlayer < 0) player5SelectedPlayer = listPlayersAvailable.Count-1;
+					playerText = listPlayersAvailable[player5SelectedPlayer].nickname;
+					break;
 			}
-			
 			// TODO ANIM LEFT ARROW
-			
-			// UI
-			panelPlayer.transform.Find("PlayerName").GetComponent<Text>().text = listPlayersAvailable[playerSelected].nickname;
-
+			panelPlayer.transform.Find("PlayerName").GetComponent<Text>().text = playerText; // UI
 			return InputManager.GetDone(playerController);
-		} else if(inputX == InputManager.GetRight(playerController)) { // Derecha
-			while(!listPlayersAvailable[playerSelected].selected) {
-				if(playerSelected+1 == listPlayersAvailable.Count) {
-					playerSelected = 0;
-				} else {
-					playerSelected++;
-				}
+		} else if(input == InputManager.GetRight(playerController)) { // Derecha
+			// Debug.Log("ACCIÓN DERECHA");
+			string playerText = "";
+			switch(player) {
+				case 1:
+					player1SelectedPlayer++;
+					if(player1SelectedPlayer == listPlayersAvailable.Count) player1SelectedPlayer = 0;
+					playerText = listPlayersAvailable[player1SelectedPlayer].nickname;
+					break;
+				case 2:
+					player2SelectedPlayer++;
+					if(player2SelectedPlayer == listPlayersAvailable.Count) player2SelectedPlayer = 0;
+					playerText = listPlayersAvailable[player2SelectedPlayer].nickname;
+					break;
+				case 3:
+					player3SelectedPlayer++;
+					if(player3SelectedPlayer == listPlayersAvailable.Count) player3SelectedPlayer = 0;
+					playerText = listPlayersAvailable[player3SelectedPlayer].nickname;
+					break;
+				case 4:
+					player4SelectedPlayer++;
+					if(player4SelectedPlayer == listPlayersAvailable.Count) player4SelectedPlayer = 0;
+					playerText = listPlayersAvailable[player4SelectedPlayer].nickname;
+					break;
+				case 5:
+					player5SelectedPlayer++;
+					if(player5SelectedPlayer == listPlayersAvailable.Count) player5SelectedPlayer = 0;
+					playerText = listPlayersAvailable[player5SelectedPlayer].nickname;
+					break;
 			}
-
 			// TODO ANIM RIGHT ARROW
-			
-			// UI
-			panelPlayer.transform.Find("PlayerName").gameObject.GetComponent<Text>().text = listPlayersAvailable[playerSelected].nickname;
+			panelPlayer.transform.Find("PlayerName").GetComponent<Text>().text = playerText; // UI
+			return InputManager.GetDone(playerController);
+		}
+		return input;
+	}
 
+	public InputType DetectInput(InputType input, int playerController) {
+		// Debug.Log("Detectando input para el mando " + playerController);
+		if(input == InputManager.GetLeft(playerController)) { // Izquierda
+			// Debug.Log("DETECTO IZQUIERDA!");
+			return InputManager.GetDone(playerController);
+		} else if(input == InputManager.GetRight(playerController)) { // Derecha
+			// Debug.Log("DETECTO DERECHA!");
+			return InputManager.GetDone(playerController);
+		} else if(input == InputManager.GetUp(playerController)) { // Arriba
+			// Debug.Log("DETECTO ARRIBA!");
+			return InputManager.GetDone(playerController);
+		} else if(input == InputManager.GetDown(playerController)) { // Abajo
+			// Debug.Log("DETECTO ABAJO!");
 			return InputManager.GetDone(playerController);
 		}
 		return InputManager.GetIdle(playerController);
 	}
+
 }
